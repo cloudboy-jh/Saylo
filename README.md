@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Voice Components
 
-## Getting Started
+A Next.js application with Electron wrapper for voice-related components.
 
-First, run the development server:
+## Development
 
+### Web Development
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Electron Development
+```bash
+npm run electron:dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This will:
+1. Start the Next.js development server
+2. Build the Electron main and preload processes
+3. Wait for the Next.js server to be ready
+4. Launch the Electron app
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Building
 
-## Learn More
+### Web Build
+```bash
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Electron Build
+```bash
+npm run electron:build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Distribution
+```bash
+npm run dist
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Features
 
-## Deploy on Vercel
+- Next.js App Router
+- Electron wrapper
+- Global shortcut support (Ctrl+Shift+S)
+- Secure IPC bridge between main and renderer processes
+- TypeScript support
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Project Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+voice-components/
+├── app/                    # Next.js App Router
+├── components/             # React components
+├── electron/               # Electron main and preload processes
+│   ├── main.ts            # Main process
+│   ├── preload.ts         # Preload script
+│   └── types.d.ts         # TypeScript declarations
+├── dist-electron/          # Built Electron processes (generated)
+└── dist/                  # Built Next.js app (generated)
+```

@@ -1,0 +1,100 @@
+Electron Integration Summary
+===========================
+
+Overview:
+---------
+This project integrates Electron with a Next.js (App Router) application to provide a desktop overlay experience. The Electron wrapper allows the web UI to run as a native desktop app, with global hotkey support and secure communication between the main process and the renderer (React/Next.js UI).
+
+Architecture:
+-------------
+- **Electron Main Process (`electron/main.ts`)**
+  - Creates a large, frameless, transparent, always-on-top window (overlay style).
+  - Registers a global shortcut (Ctrl+Shift+S) to toggle the overlay.
+  - Sends an IPC message ('toggle-overlay') to the renderer when the hotkey is pressed.
+
+- **Preload Script (`electron/preload.ts`)**
+  - Uses `contextBridge` to expose a secure API (`electronAPI`) to the renderer.
+  - Provides `onToggleOverlay` for listening to overlay toggle events from the main process.
+
+- **Renderer (Next.js/React UI)**
+  - Listens for the 'toggle-overlay' event using `window.electronAPI.onToggleOverlay`.
+  - Maintains local state to show/hide a full-screen overlay.
+  - Renders the `VoiceVisualizer` component centered in the overlay.
+  - When the overlay is shown, requests microphone access and logs the audio stream (stub for future voice features).
+
+Key Features:
+-------------
+- **Global Hotkey:** Ctrl+Shift+S toggles the overlay from anywhere on the system.
+- **Overlay Window:** Frameless, transparent, always-on-top window for a true overlay experience.
+- **Secure IPC:** Only exposes safe, whitelisted methods to the renderer via the preload script.
+- **React Integration:** Overlay state and microphone logic handled in React, with seamless communication from Electron.
+- **Microphone Stub:** When overlay is active, requests mic access and logs the stream (ready for future voice/whisper logic).
+
+How It Works:
+-------------
+1. User presses Ctrl+Shift+S.
+2. Electron main process sends 'toggle-overlay' IPC message to the renderer.
+3. Renderer (React) toggles overlay state and shows/hides the overlay.
+4. When overlay is shown, microphone access is requested and the stream is logged.
+
+File Structure:
+---------------
+- `electron/main.ts`      - Electron main process (window, hotkey, IPC)
+- `electron/preload.ts`   - Secure IPC bridge for renderer
+- `electron/types.d.ts`   - TypeScript types for exposed API
+- `app/page.tsx`          - Main Next.js page, handles overlay logic
+- `components/voice-visualizer.tsx` - Visualizer component rendered in overlay
+
+Build & Run:
+------------
+- `npm run electron:dev`  - Dev mode (Next.js + Electron)
+- `npm run electron:build`/`npm run dist` - Production build and packaging
+
+Customization:
+--------------
+- Overlay size, transparency, and always-on-top can be adjusted in `main.ts`.
+- Add custom drag regions in React for moving the overlay if needed.
+- Extend the preload bridge for more secure main-renderer communication.
+
+This setup provides a robust foundation for building advanced voice-driven desktop overlays with Electron and Next.js. 
+
+Codebase Structure (Markdown File Tree):
+----------------------------------------
+
+```
+voice-components/
+├── app/
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── dashboard/
+│   │   └── saylo-dashboard.tsx
+│   ├── ui/
+│   │   └── audio-lines.tsx
+│   ├── voice-visualizer.tsx
+│   └── liquid-glass.tsx
+├── electron/
+│   ├── main.ts
+│   ├── preload.ts
+│   └── types.d.ts
+├── lib/
+│   └── utils.ts
+├── public/
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── dist/                # Built Next.js app (generated)
+├── dist-electron/       # Built Electron processes (generated)
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── next.config.ts
+├── postcss.config.mjs
+├── README.md
+└── ELECTRON_SUMMARY.txt
+```
+
+This file tree shows the main structure and key files of the Electron + Next.js codebase. 
